@@ -3,36 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual Walkman - Retro Theme</title>
+    <title>Virtual Walkman</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="app">
         <button id="loginBtn">Login to Spotify</button>
-        
-        <div class="player-container" style="display:none;">
-            <div class="cassette">
-                <div class="tape-reel left-reel"></div>
-                <div class="tape-reel right-reel"></div>
-                <div class="tape-window"></div>
+        <div class="container player" style="display: none;">
+            <div class="display">Now Playing</div>
+
+            <!-- Cassette Window with Reels -->
+            <div class="cassette-window">
+                <div class="reel left-reel"></div>
+                <div class="reel right-reel"></div>
             </div>
-            
-            <input type="text" id="search" placeholder="Search for tracks..." />
-            <button id="searchBtn" class="retro-button">Search</button>
-            
-            <div id="trackList"></div>
-            
+
+            <!-- Track Information -->
+            <div class="track-info">
+                <h2 id="trackName">Track Name</h2>
+                <h3 id="artistName">Artist Name</h3>
+                <img id="albumArt" src="" alt="Album Art" />
+            </div>
+
+            <!-- Audio Player Controls -->
             <audio id="audioPlayer" controls>
                 <source id="audioSource" src="">
                 Your browser does not support the audio element.
             </audio>
-            
-            <img id="albumArt" src="" alt="Album Art" />
-            <h4 id="trackName"></h4>
-            <h5 id="artistName"></h5>
+
+            <!-- Search and Track List -->
+            <input type="text" id="search" placeholder="Search for tracks..." />
+            <button id="searchBtn">Search</button>
+            <div id="trackList"></div>
         </div>
     </div>
-    
     <script src="script.js"></script>
 </body>
 </html>
