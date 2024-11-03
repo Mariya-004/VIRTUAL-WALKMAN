@@ -3,25 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retro Cassette Music Player</title>
+    <title>Virtual Walkman - Retro Theme</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="player-container">
-        <div class="cassette">
-            <div class="tape-reel left-reel"></div>
-            <div class="tape-reel right-reel"></div>
-            <div class="tape-window"></div>
-            <div class="buttons">
-                <button id="playPauseBtn" class="play">Play</button>
-                <button id="stopBtn" class="stop">Stop</button>
+    <div id="app">
+        <button id="loginBtn">Login to Spotify</button>
+        
+        <div class="player-container" style="display:none;">
+            <div class="cassette">
+                <div class="tape-reel left-reel"></div>
+                <div class="tape-reel right-reel"></div>
+                <div class="tape-window"></div>
             </div>
+            
+            <input type="text" id="search" placeholder="Search for tracks..." />
+            <button id="searchBtn" class="retro-button">Search</button>
+            
+            <div id="trackList"></div>
+            
+            <audio id="audioPlayer" controls>
+                <source id="audioSource" src="">
+                Your browser does not support the audio element.
+            </audio>
+            
+            <img id="albumArt" src="" alt="Album Art" />
+            <h4 id="trackName"></h4>
+            <h5 id="artistName"></h5>
         </div>
-        <audio id="audioPlayer">
-            <source src="your-song.mp3" type="audio/mp3">
-            Your browser does not support the audio element.
-        </audio>
     </div>
+    
     <script src="script.js"></script>
 </body>
 </html>
