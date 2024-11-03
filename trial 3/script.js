@@ -1,5 +1,5 @@
-const CLIENT_ID = '1bb0139941f7416f8ae0417e2391f80d'; // Replace with your client ID
-const REDIRECT_URI = 'http://localhost:5500'; // Replace with your redirect URI
+const CLIENT_ID = '1bb0139941f7416f8ae0417e2391f80d';
+const REDIRECT_URI = 'http://localhost:5500';
 const SCOPES = 'user-read-private user-read-email user-library-read';
 
 const loginBtn = document.getElementById('loginBtn');
@@ -14,16 +14,14 @@ window.onload = () => {
     if (hash) {
         const token = hash.split('&')[0].split('=')[1];
         sessionStorage.setItem('token', token);
-        document.querySelector('.player-container').style.display = 'block';
+        document.querySelector('.player').style.display = 'block';
         fetchUserProfile(token);
     }
 };
 
 function fetchUserProfile(token) {
     fetch('https://api.spotify.com/v1/me', {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
+        headers: { 'Authorization': `Bearer ${token}` }
     })
     .then(response => {
         if (!response.ok) throw new Error('Network response was not ok');
@@ -46,9 +44,7 @@ searchBtn.addEventListener('click', () => {
 
 function fetchTracks(token, query) {
     fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track`, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
+        headers: { 'Authorization': `Bearer ${token}` }
     })
     .then(response => {
         if (!response.ok) throw new Error('Network response was not ok');
@@ -73,6 +69,7 @@ function displayTracks(tracks) {
         trackList.appendChild(trackItem);
     });
 
+    // Attach event listeners to play buttons
     const playButtons = trackList.getElementsByClassName('playButton');
     for (const button of playButtons) {
         button.addEventListener('click', (event) => {
@@ -105,4 +102,14 @@ function playTrack(previewUrl, trackName, artistName, albumArt) {
     albumArtImage.src = albumArt;
     trackNameDisplay.innerText = trackName;
     artistNameDisplay.innerText = artistName;
+
+    // Start reel animations
+    document.querySelector('.left-reel').classList.add('spinning');
+    document.querySelector('.right-reel').classList.add('spinning');
+
+    // Stop reel animations when track ends
+    audioPlayer.onended = () => {
+        document.querySelector('.left-reel').classList.remove('spinning');
+        document.querySelector('.right-reel').classList.remove('spinning');
+    };
 }
