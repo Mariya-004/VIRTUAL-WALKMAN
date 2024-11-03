@@ -15,6 +15,65 @@ body {
     align-items: center;
     min-height: 100vh;
 }
+/* Button Styling */
+#loginBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background-color: #ff5722; /* A vibrant retro orange */
+    color: #ffffff;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4); /* Text shadow for a retro feel */
+}
+
+.cassette-icon {
+    width: 30px; /* Width of the cassette icon */
+    height: 20px; /* Height of the cassette icon */
+    background-color: #666; /* Color of the cassette */
+    border-radius: 4px; /* Rounded corners for the cassette */
+    position: relative; /* To position spools */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Spools of the cassette */
+.cassette-icon::before,
+.cassette-icon::after {
+    content: '';
+    width: 8px; /* Width of the spools */
+    height: 8px; /* Height of the spools */
+    background-color: #333; /* Color of the spools */
+    border-radius: 50%; /* Round spools */
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.cassette-icon::before {
+    left: 5%; /* Position of the left spool */
+}
+
+.cassette-icon::after {
+    right: 5%; /* Position of the right spool */
+}
+
+#loginBtn:hover {
+    background-color: #e64a19; /* Darker orange for hover */
+    transform: translateY(-2px);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.6);
+}
+
+#loginBtn:active {
+    transform: translateY(1px);
+    background-color: #ff5722;
+}
 
 /* Walkman Container */
 .container {
@@ -141,4 +200,3 @@ body {
     font-size: 0.9em;
     flex: 1;
 }
-
