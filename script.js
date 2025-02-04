@@ -2,6 +2,7 @@ const CLIENT_ID = '1bb0139941f7416f8ae0417e2391f80d';
 const REDIRECT_URI = 'https://virtual-walkman.netlify.app/';
 const SCOPES = 'user-read-private user-read-email user-library-read';
 
+// Spotify Login
 const loginBtn = document.getElementById('loginBtn');
 
 loginBtn.addEventListener('click', () => {
@@ -9,76 +10,94 @@ loginBtn.addEventListener('click', () => {
     window.location = AUTH_URL;
 });
 
+// Check for token in URL
 window.onload = () => {
     const hash = window.location.hash;
     if (hash) {
-        const token = hash.split('&')[0].split('=')[1];
-        sessionStorage.setItem('token', token);
-        document.querySelector('.player').style.display = 'block';
-        fetchUserProfile(token);
+        const token = new URLSearchParams(hash.substring(1)).get('access_token');
+        if (token) {
+            sessionStorage.setItem('token', token);
+            document.querySelector('.player').style.display = 'block';
+            fetchUserProfile(token);
+        }
     }
 };
 
+// Fetch Spotify User Profile
 function fetchUserProfile(token) {
     fetch('https://api.spotify.com/v1/me', {
         headers: { 'Authorization': `Bearer ${token}` }
     })
     .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok');
+        if (!response.ok) throw new Error('Failed to fetch user profile');
         return response.json();
     })
-    .then(data => console.log(data))
+    .then(data => console.log('User Profile:', data))
     .catch(error => console.error('Error fetching user profile:', error));
 }
 
+// Search Feature
 const searchBtn = document.getElementById('searchBtn');
 const searchInput = document.getElementById('search');
 
 searchBtn.addEventListener('click', () => {
     const token = sessionStorage.getItem('token');
-    const query = searchInput.value;
+    const query = searchInput.value.trim();
     if (query) {
         fetchTracks(token, query);
     }
 });
 
+// Fetch Tracks from Spotify
 function fetchTracks(token, query) {
     fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track`, {
         headers: { 'Authorization': `Bearer ${token}` }
     })
     .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok');
+        if (!response.ok) throw new Error('Failed to fetch tracks');
         return response.json();
     })
     .then(data => displayTracks(data.tracks.items))
     .catch(error => console.error('Error fetching tracks:', error));
 }
 
+// Display Tracks
 function displayTracks(tracks) {
     const trackList = document.getElementById('trackList');
     trackList.innerHTML = '';
 
     tracks.forEach(track => {
+        if (!track.preview_url) return; // Skip tracks without previews
+
         const trackItem = document.createElement('div');
         trackItem.innerHTML = `
             <img src="${track.album.images[0]?.url}" alt="${track.name}" />
             <h4>${track.name}</h4>
             <h5>${track.artists.map(artist => artist.name).join(', ')}</h5>
-            <button class="playButton" data-preview-url="${track.preview_url}" data-track-name="${track.name}" data-artist-name="${track.artists[0]?.name}" data-album-art="${track.album.images[0]?.url}">Play</button>
+            <button class="playButton" 
+                data-preview-url="${track.preview_url}" 
+                data-track-name="${track.name}" 
+                data-artist-name="${track.artists[0]?.name}" 
+                data-album-art="${track.album.images[0]?.url}">
+                Play
+            </button>
         `;
         trackList.appendChild(trackItem);
     });
 
     // Attach event listeners to play buttons
-    const playButtons = trackList.getElementsByClassName('playButton');
-    for (const button of playButtons) {
-        button.addEventListener('click', (event) => {
-            const { previewUrl, trackName, artistName, albumArt } = event.target.dataset;
+    document.querySelectorAll('.playButton').forEach(button => {
+        button.addEventListener('click', function () {
+            const previewUrl = this.getAttribute('data-preview-url');
+            const trackName = this.getAttribute('data-track-name');
+            const artistName = this.getAttribute('data-artist-name');
+            const albumArt = this.getAttribute('data-album-art');
             playTrack(previewUrl, trackName, artistName, albumArt);
         });
-    }
+    });
 }
 
+// Play Track
 function playTrack(previewUrl, trackName, artistName, albumArt) {
     const audioPlayer = document.getElementById('audioPlayer');
     const audioSource = document.getElementById('audioSource');
@@ -89,15 +108,16 @@ function playTrack(previewUrl, trackName, artistName, albumArt) {
     audioPlayer.pause();
     audioPlayer.currentTime = 0;
 
-    if (previewUrl) {
-        audioSource.src = `${previewUrl}?nocache=${Date.now()}`;
-    } else {
+    if (!previewUrl) {
         alert("Preview not available for this track.");
         return;
     }
 
+    audioSource.src = `${previewUrl}?nocache=${Date.now()}`;
     audioPlayer.load();
-    audioPlayer.play();
+    audioPlayer.play()
+        .then(() => console.log(`Now playing: ${trackName} by ${artistName}`))
+        .catch(error => console.error('Playback error:', error));
 
     albumArtImage.src = albumArt;
     trackNameDisplay.innerText = trackName;
@@ -113,3 +133,11 @@ function playTrack(previewUrl, trackName, artistName, albumArt) {
         document.querySelector('.right-reel').classList.remove('spinning');
     };
 }
+
+// Handle Browser Autoplay Restriction
+document.addEventListener('click', () => {
+    const audioPlayer = document.getElementById('audioPlayer');
+    if (audioPlayer.paused) {
+        audioPlayer.play().catch(error => console.log("Autoplay blocked:", error));
+    }
+});
