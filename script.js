@@ -1,5 +1,5 @@
 const CLIENT_ID = '1bb0139941f7416f8ae0417e2391f80d';
-const REDIRECT_URI = 'https://virtual-walkman.netlify.app/';
+const REDIRECT_URI = 'https://virtual-walkman.netlify.app';
 const SCOPES = 'user-read-private user-read-email user-library-read';
 
 // 🔹 Spotify Login
